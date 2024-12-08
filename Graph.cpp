@@ -12,6 +12,7 @@ Graph::Graph(const Graph &other) {
     for (int i = 0; i < listSize; i++) {
         adjacencyList[i] = other.adjacencyList[i];
     }
+    sorted = other.sorted; // copying sorted
 }
 
 Graph::~Graph() {
@@ -27,10 +28,10 @@ Graph Graph::operator=(const Graph &other) {
     for (int i = 0; i < listSize; i++) {
         adjacencyList[i] = other.adjacencyList[i];
     }
+    sorted = other.sorted; // copying sorted
 
     return *this;
 }
-
 
 void Graph::addEdge(int u, int v) {
     u -= 1;
@@ -48,7 +49,7 @@ void Graph::addEdge(int u, int v) {
         adjacencyList = newList;
         listSize = newSize;
     }
-    
+
     adjacencyList[u].push_back(v);
 }
 
@@ -79,7 +80,7 @@ bool Graph::edgeIn(int u, int v) {
 void Graph::deleteVertex(int u) {
     u -= 1;  
 
-    if (u > listSize) {
+    if (u >= listSize) {
         throw edge_exception();
     }
 
@@ -87,7 +88,7 @@ void Graph::deleteVertex(int u) {
 
     for (int i = 0; i < listSize; ++i) {
         if (i != u) {
-            auto it = find(adjacencyList[i].begin(), adjacencyList[i].end(), u);
+            auto it = std::find(adjacencyList[i].begin(), adjacencyList[i].end(), u);
             if (it != adjacencyList[i].end()) {
                 adjacencyList[i].erase(it);
             }
@@ -119,9 +120,54 @@ void Graph::addVertex(int u) {
 
 }
 
-unordered_map<int, pair<int, int> > Graph::breadthFirstSearch(int s) {
+unordered_map<int, pair<int, int>> Graph::breadthFirstSearch(int s) {
+    // Adjust for 0-based indexing
+    s -= 1;
 
+    if (s < 0 || s >= listSize) {
+        throw edge_exception(); // Invalid starting vertex
+    }
+
+    unordered_map<int, pair<int, int>> bfsResult;
+
+    // Initialize visited, distance, and parent vectors
+    vector<bool> visited(listSize, false);
+    vector<int> distance(listSize, -1); // Distance from source
+    vector<int> parent(listSize, -1);  // Parent in BFS tree
+
+    // BFS queue
+    queue<int> q;
+
+    // Initialize source
+    visited[s] = true;
+    distance[s] = 0;
+    q.push(s);
+
+    // Perform BFS
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+
+        for (int v : adjacencyList[u]) { // Traverse neighbors of u
+            if (!visited[v]) {
+                visited[v] = true;
+                distance[v] = distance[u] + 1;
+                parent[v] = u;
+                q.push(v);
+            }
+        }
+    }
+
+    // Populate the result map with 1-based vertex indexing
+    for (int i = 0; i < listSize; i++) {
+        if (visited[i]) { // Include only reachable vertices
+            bfsResult[i + 1] = {distance[i], parent[i] == -1 ? -1 : parent[i] + 1};
+        }
+    }
+
+    return bfsResult;
 }
+
 
 // unordered_map<int, tuple<int, int, int> > Graph::depthFirstSearch(bool sort=false) {
 
@@ -136,6 +182,7 @@ void Graph::readFromSTDIN() {
     cin >> n >> m;
 
     delete[] adjacencyList;
+    adjacencyList = nullptr;
 
     listSize = n;
     adjacencyList = new vector<int>[listSize];

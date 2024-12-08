@@ -1,7 +1,8 @@
-mytests: Graph.o mytests.o
+mytests: graph.o mytests.o
 	g++ -std=c++17 -o mytests Graph.o mytests.o
+	./mytests < myGraph.txt
 
-Graph.o: Graph.cpp Graph.hpp
+graph.o: Graph.cpp Graph.hpp
 	g++ -std=c++17 -c Graph.cpp
 
 mytests.o: mytests.cpp Graph.hpp

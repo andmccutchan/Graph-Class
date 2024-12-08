@@ -6,14 +6,16 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
+#include <algorithm>
 #include "customexceptions.hpp"
+#include <queue>
 using namespace std;
 
 class Graph {
     private:
-		vector<int> sorted;
-		vector<int>* adjacencyList;
-		int listSize;
+      vector<int> sorted;
+      vector<int>* adjacencyList;
+      int listSize;
     public:
                 Graph();
                 Graph(const Graph &other);
@@ -27,7 +29,7 @@ class Graph {
         unordered_map<int, pair<int, int> > breadthFirstSearch(int s);
         // unordered_map<int, tuple<int, int, int> > depthFirstSearch(bool sort = false);
         vector<int> getOrdering();
-		void printAdjacencyList() const;
+		    void printAdjacencyList() const;
         void    readFromSTDIN();
 };
 
