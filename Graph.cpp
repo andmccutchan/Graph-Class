@@ -1,3 +1,9 @@
+//=========================================================
+// Graph.cpp
+// Andrew McCutchan, Huy Phan, Namu Kim
+// 07/12/2024
+// Contains the implementation file for Graph class
+//=========================================================
 #include "Graph.hpp"
 
 Graph::Graph() {
@@ -120,6 +126,21 @@ void Graph::addVertex(int u) {
 
 }
 
+//==============================================================
+// Breadth-First Search (BFS)
+// Huy Phan
+// Performs BFS traversal starting from a given source vertex (1-based).
+// Computes the shortest distances and parent relationships for all
+// reachable vertices in the graph. Uses a queue for level-by-level
+// traversal.
+//
+// PARAMETERS:
+//    s - The source vertex (1-based index) from which BFS starts.
+//        Must be a valid vertex in the graph.
+//
+// RETURN VALUE:
+//    unordered_map<int, pair<int, int>>:
+//==============================================================
 unordered_map<int, pair<int, int>> Graph::breadthFirstSearch(int s) {
     // Adjust for 0-based indexing
     s -= 1;

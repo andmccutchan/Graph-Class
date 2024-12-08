@@ -1,3 +1,9 @@
+//=========================================================
+// Graph.hpp
+// Andrew McCutchan, Huy Phan, Namu Kim
+// 07/12/2024
+// Contains the header file for graph class
+//=========================================================
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
