@@ -9,3 +9,6 @@ mytests.o
 *.o
 *.o
 *.exe
+*.o
+*.o
+*.exe

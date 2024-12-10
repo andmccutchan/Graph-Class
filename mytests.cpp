@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include "Graph.hpp"
+#include "Graph.cpp"
 
 using namespace std;
 
@@ -109,10 +110,20 @@ void testDepthFirstSearch(){
     g.addVertex(3);
     g.addEdge(1, 2);
     g.addEdge(2, 3);
-    auto dfsResult = g.depthFirstSearch(false);
-    // assertTest(dfsResult[1].first == 0, "BFS: Distance to self is 0");
-    // assertTest(dfsResult[2].first == 1, "BFS: Distance to 2 is 1");
-    // assertTest(dfsResult[3].first == 2, "BFS: Distance to 3 is 2");
+    g.addVertex(4);
+    g.addEdge(4, 1);
+
+    unordered_map<int, tuple<int, int, int>> dfsResultFalse = g.depthFirstSearch(false);
+
+    for (const auto& [node, times] : dfsResultFalse) {
+    cout << "Node: " << node 
+         << ", Discovery: " << get<0>(times) 
+         << ", Finish: " << get<1>(times) 
+         << ", Parent: " << get<2>(times) 
+         << endl;
+    }
+    //auto dfsResultTrue = g.depthFirstSearch(true);
+    //assertTest(dfsResultFalse[3] == (1,2,3), "DFS:");
 }
 
 // Test Read from File Input via STDIN
@@ -137,13 +148,13 @@ int main() {
     testAddVertex();
     testDeleteVertex();
     testBreadthFirstSearch();
-    //testDepthFirstSearch();
+    testDepthFirstSearch();
 
     // Tests for redirected input and adjacency list
     cout << "\nTesting with input redirection (e.g., < myGraph.txt):" << endl;
     testReadFromFileInput();
 
-    testDepthFirstSearch();
+    
 
     // Print summary
     cout << "\nTest Summary:" << endl;

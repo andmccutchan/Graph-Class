@@ -190,7 +190,7 @@ unordered_map<int, pair<int, int>> Graph::breadthFirstSearch(int s) {
 }
 
 void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vector<int>& d, vector<int>& f, int& time, int u){
-    //air<int, int> times;
+
     time++;
     d[u] = time;
     dist[u] = d[u];
@@ -200,22 +200,21 @@ void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vect
         if (color[v] == -1){
             p[v] = u;
             dfsVisit(color, p, dist, d, f, time, v);
-            //times.first = d[u];
-            //times.second = f[u];
         }
     }
     time++;
     f[u] = time;
-    color[u] == 1;
+    color[u] = 1;
     
-    //return times;
 
 }
 
 unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false) {
     
+    // declare return value
     unordered_map <int, tuple<int, int, int>> dfsResult;
     
+    // initial configuration for dfs
     vector<int> color(listSize, -1); //-1 = white, 0 = gray, 1 = black.
     vector<int> dist(listSize, -1);
     vector<int> p(listSize, -1);
@@ -223,15 +222,15 @@ unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false
     vector<int> f(listSize, 0);
     vector<int> d(listSize, 0);
 
-    int u=0;
-
-    for (int v : adjacencyList[u]) {
+    for (int u = 0; u < listSize; ++u) {
         if ( color[u] == -1){
             dfsVisit(color, p, dist, d, f, time, u);
         }
-        
-        dfsResult[u] = make_tuple(d[u], f[u], p[u]);
-        u++;
+    }
+
+
+    for (int u = 0; u < listSize; ++u) {
+        dfsResult[u+1] = make_tuple(d[u]+1, f[u]+1, p[u]+1);
     }
     return dfsResult;
 }
