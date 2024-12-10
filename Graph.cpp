@@ -190,6 +190,7 @@ unordered_map<int, pair<int, int>> Graph::breadthFirstSearch(int s) {
 }
 
 void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vector<int>& d, vector<int>& f, int& time, int u){
+    //air<int, int> times;
     time++;
     d[u] = time;
     dist[u] = d[u];
@@ -199,17 +200,21 @@ void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vect
         if (color[v] == -1){
             p[v] = u;
             dfsVisit(color, p, dist, d, f, time, u);
+            //times.first = d[u];
+            //times.second = f[u];
         }
     }
     time++;
     f[u] = time;
     color[u] == 1;
+    
+    //return times;
 
 }
 
 unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false) {
     
-    unordered_map <int, tuple<int, int>> dfsResult;
+    unordered_map <int, tuple<int, int, int>> dfsResult;
     
     vector<int> color(listSize, -1); //-1 = white, 0 = gray, 1 = black.
     vector<int> dist(listSize, -1);
@@ -224,8 +229,11 @@ unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false
         if ( color[u] == -1){
             dfsVisit(color, p, dist, d, f, time, u);
         }
+        
+        dfsResult[u] = {d[u], f[u], p[u]};
         u++;
     }
+    return dfsResult;
 }
 
 vector<int> Graph::getOrdering() {
