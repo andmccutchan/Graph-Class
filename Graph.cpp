@@ -6,11 +6,26 @@
 //=========================================================
 #include "Graph.hpp"
 
+
+//===================================================================
+// Graph::Graph()
+// Default constructor to initialize an empty graph
+// PARAMETERS: None
+// RETURN VALUE: None
+//===================================================================
 Graph::Graph() {
     listSize = 0;
     adjacencyList = new vector<int>[listSize];
 }
 
+
+//===================================================================
+// Graph::Graph(const Graph &other)
+// Copy constructor to create a deep copy of another Graph object
+// PARAMETERS: 
+// - other: const Graph&, the graph object to copy
+// RETURN VALUE: None
+//===================================================================
 Graph::Graph(const Graph &other) {
     listSize = other.listSize;
     adjacencyList = new vector<int>[listSize];
@@ -21,10 +36,26 @@ Graph::Graph(const Graph &other) {
     sorted = other.sorted; // copying sorted
 }
 
+
+//===================================================================
+// ~Graph()
+// Destructor to release dynamically allocated memory
+// PARAMETERS: None
+// RETURN VALUE: None
+//===================================================================
 Graph::~Graph() {
     delete[] adjacencyList;
 }
 
+
+//===================================================================
+// Graph::operator=(const Graph &other)
+// Assignment operator to assign one Graph object to another
+// PARAMETERS: 
+// - other: const Graph&, the graph object to assign from
+// RETURN VALUE: 
+// - Graph: the current graph object after assignment
+//===================================================================
 Graph Graph::operator=(const Graph &other) {
     delete[] adjacencyList;
 
@@ -39,6 +70,14 @@ Graph Graph::operator=(const Graph &other) {
     return *this;
 }
 
+//===================================================================
+// addEdge
+// Adds a directed edge from vertex u to vertex v
+// PARAMETERS: 
+// - u: int, starting vertex of the edge
+// - v: int, ending vertex of the edge
+// RETURN VALUE: None
+//===================================================================
 void Graph::addEdge(int u, int v) {
     u -= 1;
     v -= 1;
@@ -59,6 +98,15 @@ void Graph::addEdge(int u, int v) {
     adjacencyList[u].push_back(v);
 }
 
+
+//===================================================================
+// removeEdge
+// Removes a directed edge from vertex u to vertex v
+// PARAMETERS: 
+// - u: int, starting vertex of the edge
+// - v: int, ending vertex of the edge
+// RETURN VALUE: None
+//===================================================================
 void Graph::removeEdge(int u, int v) {
     u -= 1; 
     v -= 1;
@@ -72,6 +120,16 @@ void Graph::removeEdge(int u, int v) {
     }
 }
 
+
+//===================================================================
+// edgeIn
+// Checks if an edge exists between vertices u and v
+// PARAMETERS: 
+// - u: int, starting vertex of the edge
+// - v: int, ending vertex of the edge
+// RETURN VALUE: 
+// - bool: true if the edge exists, false otherwise
+//===================================================================
 bool Graph::edgeIn(int u, int v) {
     u -= 1;
     v -= 1;
@@ -83,6 +141,14 @@ bool Graph::edgeIn(int u, int v) {
     return find(adjacencyList[u].begin(), adjacencyList[u].end(), v) != adjacencyList[u].end();
 }
 
+
+//===================================================================
+// deleteVertex
+// Deletes a vertex and all associated edges
+// PARAMETERS: 
+// - u: int, the vertex to delete
+// RETURN VALUE: None
+//===================================================================
 void Graph::deleteVertex(int u) {
     u -= 1;  
 
@@ -102,6 +168,14 @@ void Graph::deleteVertex(int u) {
     }
 }
 
+
+//===================================================================
+// addVertex
+// Adds a new vertex to the graph
+// PARAMETERS: 
+// - u: int, the new vertex to add
+// RETURN VALUE: None
+//===================================================================
 void Graph::addVertex(int u) {
     u -= 1;
 
@@ -193,70 +267,105 @@ void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vect
     //air<int, int> times;
     time++;
     d[u] = time;
-    dist[u] = d[u];
     color[u] = 0;
 
     for (int v : adjacencyList[u]) {
         if (color[v] == -1){
             p[v] = u;
             dfsVisit(color, p, dist, d, f, time, v);
-            //times.first = d[u];
-            //times.second = f[u];
         }
     }
     time++;
     f[u] = time;
-    color[u] == 1;
-    
-    //return times;
-
+    color[u] = 1;
 }
 
-unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false) {
-    
-    unordered_map <int, tuple<int, int, int>> dfsResult;
-    
-    vector<int> color(listSize, -1); //-1 = white, 0 = gray, 1 = black.
+unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool enableSort) {
+    unordered_map<int, tuple<int, int, int>> dfsResult;
+    vector<int> color(listSize, -1); // -1 = white, 0 = gray, 1 = black
     vector<int> dist(listSize, -1);
     vector<int> p(listSize, -1);
     int time = 0;
-    vector<int> f(listSize, 0);
-    vector<int> d(listSize, 0);
+    vector<int> f(listSize, 0); // Finish times
+    vector<int> d(listSize, 0); // Discovery times
 
-    int u=0;
-
-    for (int v : adjacencyList[u]) {
-        if ( color[u] == -1){
+    // Perform DFS on each unvisited vertex
+    for (int u = 0; u < listSize; u++) {
+        if (color[u] == -1) {
             dfsVisit(color, p, dist, d, f, time, u);
         }
-        
-        dfsResult[u] = make_tuple(d[u], f[u], p[u]);
-        u++;
     }
+
+    // Populate the DFS result
+    for (int u = 0; u < listSize; u++) {
+        dfsResult[u + 1] = make_tuple(d[u], f[u], p[u] == -1 ? -1 : p[u] + 1);
+    }
+
+    // Populate `sorted` if sorting is requested
+    if (enableSort) {
+        vector<pair<int, int>> finishOrder; // Pair of (finish time, vertex index)
+        for (int u = 0; u < listSize; u++) {
+            finishOrder.emplace_back(f[u], u + 1); // Use 1-based indexing
+        }
+        std::sort(finishOrder.rbegin(), finishOrder.rend()); // Sort by finish time descending
+
+        sorted.clear();
+        for (const auto& pair : finishOrder) {
+            sorted.push_back(pair.second); // Store vertex indices in sorted order
+        }
+    }
+
     return dfsResult;
 }
 
+//===================================================================
+// getOrdering
+// Retrieves the current topological ordering of the graph (if sorted)
+// PARAMETERS: None
+// RETURN VALUE:
+// - vector<int>: a vector representing the topological order
+//===================================================================
 vector<int> Graph::getOrdering() {
     return sorted;
 }
 
-void Graph::readFromSTDIN() {
+//===================================================================
+// readFromSTDIN
+// Reads a graph from standard input in adjacency list format
+// PARAMETERS: None
+// RETURN VALUE:
+// - Graph: a new Graph object populated with the input adjacency list
+// INPUT FORMAT:
+// - The first line contains two integers, n (number of vertices) and m (number of edges).
+// - The next m lines each contain two integers, u and v, representing a directed edge from u to v.
+//===================================================================
+Graph Graph::readFromSTDIN() {
     int n, m;
     cin >> n >> m;
 
-    delete[] adjacencyList;
-    adjacencyList = nullptr;
-
-    listSize = n;
-    adjacencyList = new vector<int>[listSize];
+    Graph g;
+    g.adjacencyList = new vector<int>[n];
+    g.listSize = n;
 
     for (int i = 0; i < m; i++) {
         int u, v;
         cin >> u >> v;
-        addEdge(u, v);
+        g.addEdge(u, v);
     }
+
+    return g;
 }
 
+
+//===================================================================
+// printAdjacencyList
+// Prints the graph's adjacency list representation to standard output
+// PARAMETERS: None
+// RETURN VALUE: None
+// OUTPUT FORMAT:
+// - For each vertex, prints its outgoing edges in the format:
+//   vertex: neighbor1 -> neighbor2 -> ... -> /
+//===================================================================
 void Graph::printAdjacencyList() const {
     for (int i = 0; i < listSize; i++) {
         cout << i + 1 << ": ";

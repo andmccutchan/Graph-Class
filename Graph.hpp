@@ -37,7 +37,7 @@ class Graph {
         unordered_map<int, tuple<int, int, int> > depthFirstSearch(bool sort);
         vector<int> getOrdering();
 		    void printAdjacencyList() const;
-        void    readFromSTDIN();
+        static Graph   readFromSTDIN();
 };
 
 #endif

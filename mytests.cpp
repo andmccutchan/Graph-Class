@@ -101,23 +101,71 @@ void testBreadthFirstSearch() {
     assertTest(bfsResult[3].first == 2, "BFS: Distance to 3 is 2");
 }
 
-//Test Depth First Search
-void testDepthFirstSearch(){
+// Test Depth First Search
+void testDepthFirstSearch() {
     Graph g;
+
+    // Add vertices and edges to form a DAG
     g.addVertex(1);
     g.addVertex(2);
     g.addVertex(3);
+    g.addVertex(4);
+    g.addVertex(5);
     g.addEdge(1, 2);
-    g.addEdge(2, 3);
-    auto dfsResult = g.depthFirstSearch(false);
-    // assertTest(dfsResult[1].first == 0, "BFS: Distance to self is 0");
-    // assertTest(dfsResult[2].first == 1, "BFS: Distance to 2 is 1");
-    // assertTest(dfsResult[3].first == 2, "BFS: Distance to 3 is 2");
+    g.addEdge(1, 3);
+    g.addEdge(3, 4);
+    g.addEdge(4, 5);
+
+    // Perform DFS with sorting enabled
+    unordered_map<int, tuple<int, int, int>> dfsResult = g.depthFirstSearch(true);
+
+    // Retrieve the ordering
+    vector<int> ordering = g.getOrdering();
+
+    // Validate discovery and finish times
+    assertTest(dfsResult[1] == make_tuple(1, 10, -1), "DFS: Correct discovery, finish, and parent for vertex 1");
+    assertTest(dfsResult[2] == make_tuple(2, 3, 1), "DFS: Correct discovery, finish, and parent for vertex 2");
+    assertTest(dfsResult[3] == make_tuple(4, 9, 1), "DFS: Correct discovery, finish, and parent for vertex 3");
+    assertTest(dfsResult[4] == make_tuple(5, 8, 3), "DFS: Correct discovery, finish, and parent for vertex 4");
+    assertTest(dfsResult[5] == make_tuple(6, 7, 4), "DFS: Correct discovery, finish, and parent for vertex 5");
+
+    // Validate the topological ordering (e.g., 1 → 3 → 4 → 5 → 2 is valid)
+    vector<int> expectedOrder = {1, 3, 4, 5, 2};
+    assertTest(ordering == expectedOrder, "DFS: Correct topological ordering");
 }
+
+
+// Test Get Ordering
+void testGetOrdering() {
+    Graph g;
+
+    // Add vertices and edges to form a directed acyclic graph (DAG)
+    g.addVertex(1);
+    g.addVertex(2);
+    g.addVertex(3);
+    g.addVertex(4);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(3, 4);
+
+    // Perform DFS with sorting enabled
+    g.depthFirstSearch(true); // This populates the `sorted` vector
+
+    // Retrieve the ordering
+    vector<int> ordering = g.getOrdering();
+
+    // Validate the ordering
+    assertTest(ordering.size() == 4, "Get Ordering: Correct number of vertices in ordering");
+    
+    // Check the topological order (example: 1 → 3 → 4 → 2 is valid)
+    bool isValidOrder = (ordering[0] == 1 && ordering[1] == 3 && ordering[2] == 4 && ordering[3] == 2);
+    assertTest(isValidOrder, "Get Ordering: Correct topological order");
+}
+
 
 // Test Read from File Input via STDIN
 void testReadFromFileInput() {
-    Graph g;
+    Graph g = Graph::readFromSTDIN(); 
     g.readFromSTDIN(); // Read graph from redirected input
     g.printAdjacencyList();
     // Example assertions to validate edges from the input
@@ -137,13 +185,12 @@ int main() {
     testAddVertex();
     testDeleteVertex();
     testBreadthFirstSearch();
-    //testDepthFirstSearch();
+    testDepthFirstSearch();
+    testGetOrdering();
 
     // Tests for redirected input and adjacency list
     cout << "\nTesting with input redirection (e.g., < myGraph.txt):" << endl;
     testReadFromFileInput();
-
-    testDepthFirstSearch();
 
     // Print summary
     cout << "\nTest Summary:" << endl;
