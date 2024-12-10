@@ -5,3 +5,4 @@ mytests.o
 Graph.o
 mytests.o
 *.o
+*.o

@@ -109,7 +109,7 @@ void testDepthFirstSearch(){
     g.addVertex(3);
     g.addEdge(1, 2);
     g.addEdge(2, 3);
-    auto bfsResult = g.depthFirstSearch();
+    auto dfsResult = g.depthFirstSearch(false);
     // assertTest(dfsResult[1].first == 0, "BFS: Distance to self is 0");
     // assertTest(dfsResult[2].first == 1, "BFS: Distance to 2 is 1");
     // assertTest(dfsResult[3].first == 2, "BFS: Distance to 3 is 2");
@@ -137,6 +137,7 @@ int main() {
     testAddVertex();
     testDeleteVertex();
     testBreadthFirstSearch();
+    testDepthFirstSearch();
 
     // Tests for redirected input and adjacency list
     cout << "\nTesting with input redirection (e.g., < myGraph.txt):" << endl;
