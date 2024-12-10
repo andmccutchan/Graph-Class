@@ -101,6 +101,20 @@ void testBreadthFirstSearch() {
     assertTest(bfsResult[3].first == 2, "BFS: Distance to 3 is 2");
 }
 
+//Test Depth First Search
+void testDepthFirstSearch(){
+    Graph g;
+    g.addVertex(1);
+    g.addVertex(2);
+    g.addVertex(3);
+    g.addEdge(1, 2);
+    g.addEdge(2, 3);
+    auto bfsResult = g.depthFirstSearch();
+    // assertTest(dfsResult[1].first == 0, "BFS: Distance to self is 0");
+    // assertTest(dfsResult[2].first == 1, "BFS: Distance to 2 is 1");
+    // assertTest(dfsResult[3].first == 2, "BFS: Distance to 3 is 2");
+}
+
 // Test Read from File Input via STDIN
 void testReadFromFileInput() {
     Graph g;

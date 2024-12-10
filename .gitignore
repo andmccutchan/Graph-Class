@@ -1,0 +1,7 @@
+
+Graph.o
+mytests.o
+.vscode/tasks.json
+Graph.o
+mytests.o
+*.o

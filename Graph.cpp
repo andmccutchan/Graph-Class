@@ -189,10 +189,41 @@ unordered_map<int, pair<int, int>> Graph::breadthFirstSearch(int s) {
     return bfsResult;
 }
 
+void Graph::dfsVisit(vector<int>* color, vector<int>* p, vector<int>* dist, vector<int>* d, vector<int>* f, int* time, int u){
+    time++;
+    d[u] = time;
+    dist[u] = d[u];
+    color[u] = 0;
 
-// unordered_map<int, tuple<int, int, int> > Graph::depthFirstSearch(bool sort=false) {
+    for (int v : adjacencyList[u]) {
+        if (color[v] == -1){
+            p[v] = u;
+            dfsVisit(color, p, dist, d, f, time, u);
+        }
+    }
+    time++;
+    f[u] = time;
+    color[u] == 1;
 
-// }
+}
+
+unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false) {
+    
+    unordered_map <int, tuple<int, int>> dfsResult;
+    
+    vector<int> color(listSize, -1); //-1 = white, 0 = gray, 1 = black.
+    vector<int> dist(listSize, -1);
+    vector<int> p(listSize, -1);
+    int time = 0;
+    vector<int> f(listSize, 0);
+    vector<int> d(listSize, 0);
+
+    for (int v : adjacencyList[u]) {
+        if (color[u] == -1){
+            dfsVisit(color, p, dist, d, f, time, u);
+        } 
+    }
+}
 
 vector<int> Graph::getOrdering() {
     return sorted;
