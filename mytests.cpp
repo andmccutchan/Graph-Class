@@ -110,27 +110,22 @@ void testDepthFirstSearch() {
     g.addVertex(2);
     g.addVertex(3);
     g.addVertex(4);
-    g.addVertex(5);
     g.addEdge(1, 2);
     g.addEdge(1, 3);
     g.addEdge(3, 4);
-    g.addEdge(4, 5);
 
     // Perform DFS with sorting enabled
     unordered_map<int, tuple<int, int, int>> dfsResult = g.depthFirstSearch(true);
 
-    // Retrieve the ordering
-    vector<int> ordering = g.getOrdering();
-
     // Validate discovery and finish times
-    assertTest(dfsResult[1] == make_tuple(1, 10, -1), "DFS: Correct discovery, finish, and parent for vertex 1");
+    assertTest(dfsResult[1] == make_tuple(1, 8, -1), "DFS: Correct discovery, finish, and parent for vertex 1");
     assertTest(dfsResult[2] == make_tuple(2, 3, 1), "DFS: Correct discovery, finish, and parent for vertex 2");
-    assertTest(dfsResult[3] == make_tuple(4, 9, 1), "DFS: Correct discovery, finish, and parent for vertex 3");
-    assertTest(dfsResult[4] == make_tuple(5, 8, 3), "DFS: Correct discovery, finish, and parent for vertex 4");
-    assertTest(dfsResult[5] == make_tuple(6, 7, 4), "DFS: Correct discovery, finish, and parent for vertex 5");
+    assertTest(dfsResult[3] == make_tuple(4, 7, 1), "DFS: Correct discovery, finish, and parent for vertex 3");
+    assertTest(dfsResult[4] == make_tuple(5, 6, 3), "DFS: Correct discovery, finish, and parent for vertex 4");
 
-    // Validate the topological ordering (e.g., 1 → 3 → 4 → 5 → 2 is valid)
-    vector<int> expectedOrder = {1, 3, 4, 5, 2};
+    // Validate topological ordering
+    vector<int> ordering = g.getOrdering();
+    vector<int> expectedOrder = {1, 3, 4, 2};
     assertTest(ordering == expectedOrder, "DFS: Correct topological ordering");
 }
 

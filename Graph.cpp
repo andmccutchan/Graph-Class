@@ -263,6 +263,25 @@ unordered_map<int, pair<int, int>> Graph::breadthFirstSearch(int s) {
     return bfsResult;
 }
 
+//===================================================================
+// dfsVisit
+// Helper function to perform a Depth-First Search (DFS) traversal.
+// This function visits a single vertex and recursively explores its
+// neighbors, updating discovery and finish times, parent relationships,
+// and the color state for each vertex.
+//
+// PARAMETERS:
+// - color: vector<int>& - Tracks the state of each vertex:
+//         -1 = unvisited (white), 0 = visiting (gray), 1 = visited (black).
+// - p: vector<int>& - Stores the parent of each vertex in the DFS tree.
+// - dist: vector<int>& - Placeholder for potential distance calculations.
+// - d: vector<int>& - Records the discovery time of each vertex.
+// - f: vector<int>& - Records the finish time of each vertex.
+// - time: int& - Tracks the current timestamp during traversal.
+// - u: int - The current vertex being visited.
+//
+// RETURN VALUE: None
+//===================================================================
 void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vector<int>& d, vector<int>& f, int& time, int u){
     //air<int, int> times;
     time++;
@@ -280,7 +299,27 @@ void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vect
     color[u] = 1;
 }
 
-unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool enableSort) {
+//===================================================================
+// depthFirstSearch
+// Performs a Depth-First Search (DFS) on the graph and computes
+// discovery times, finish times, and parent relationships for all
+// vertices. If the parameter `sort` is true, the function also
+// computes a topological ordering of the graph.
+//
+// PARAMETERS:
+// - sort: bool (default = false) - If true, populates the `sorted`
+//   vector with a topological ordering of the vertices.
+//
+// RETURN VALUE:
+// - unordered_map<int, tuple<int, int, int>>:
+//   A map where:
+//     - Key: int - The vertex (1-based index).
+//     - Value: tuple<int, int, int> - Contains:
+//       - Discovery time (u.d).
+//       - Finish time (u.f).
+//       - Parent in the DFS tree (u.p).
+//===================================================================
+unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort = false) {
     unordered_map<int, tuple<int, int, int>> dfsResult;
     vector<int> color(listSize, -1); // -1 = white, 0 = gray, 1 = black
     vector<int> dist(listSize, -1);
@@ -302,7 +341,7 @@ unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool enableSort
     }
 
     // Populate `sorted` if sorting is requested
-    if (enableSort) {
+    if (sort) {
         vector<pair<int, int>> finishOrder; // Pair of (finish time, vertex index)
         for (int u = 0; u < listSize; u++) {
             finishOrder.emplace_back(f[u], u + 1); // Use 1-based indexing
