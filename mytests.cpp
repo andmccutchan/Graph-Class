@@ -103,14 +103,15 @@ void testBreadthFirstSearch() {
 }
 
 void testDepthFirstSearch() {
-    Graph g;
-    g.addVertex(1);
-    g.addVertex(2);
-    g.addVertex(3);
-    g.addEdge(1, 2);
-    g.addEdge(2, 3);
-    auto dfsResult = g.depthFirstSearch(1);
-    g.printAdjacencyList();
+    Graph g = Graph::readFromSTDIN();
+    auto result = g.depthFirstSearch(true);
+    
+    for (const auto& [vertex, tuple] : result) {
+    cout << "Vertex: " << vertex
+         << ", Discovery: " << get<0>(tuple)
+         << ", Finish: " << get<1>(tuple)
+         << ", Parent: " << get<2>(tuple) << endl;
+}
 }
 
 // Test Read from File Input via STDIN
@@ -140,6 +141,7 @@ int main() {
     // cout << "\nTesting with input redirection (e.g., < myGraph.txt):" << endl;
     // testReadFromFileInput();
     testDepthFirstSearch();
+
 
     // Print summary
     cout << "\nTest Summary:" << endl;

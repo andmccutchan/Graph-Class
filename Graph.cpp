@@ -170,63 +170,53 @@ unordered_map<int, pair<int, int> > Graph::breadthFirstSearch(int s) {
     return bfsResult;
 }
 
-void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vector<int>& d, vector<int>& f, int& time, int u){
+void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& d, vector<int>& f, int& time, int u, vector<int>& sorted) {
     time++;
-    d[u] = time;    
-    dist[u] = d[u];
-    color[u] = 0;   
+    d[u] = time;
+    color[u] = 0; 
 
     for (int v : adjacencyList[u]) {
-        if (color[v] == -1) {   
-            p[v] = u;           
-            dfsVisit(color, p, dist, d, f, time, v);  
+        if (color[v] == -1) { // White
+            p[v] = u;
+            dfsVisit(color, p, d, f, time, v, sorted);
         }
     }
 
+    color[u] = 1; 
     time++;
-    f[u] = time;        
-    color[u] = 1;
-
+    f[u] = time;
+    sorted.push_back(u); 
 }
 
 unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort) {
     unordered_map<int, tuple<int, int, int>> dfsResult;
 
-    vector<int> color(listSize, -1);  // -1 = WHITE, 0 = GRAY, 1 = BLACK
-    vector<int> dist(listSize, -1);
-    vector<int> p(listSize, -1);
+    vector<int> color(listSize, -1); // -1 = white, 0 = gray, 1 = black
+    vector<int> p(listSize, -1);    // Parent array
+    vector<int> d(listSize, 0);     // Discovery time
+    vector<int> f(listSize, 0);     // Finish time
+    vector<int> ordered;           // For topological sorting
     int time = 0;
-    vector<int> f(listSize, 0);
-    vector<int> d(listSize, 0);
 
-    // Perform DFS for every unvisited vertex.
+    // Perform DFS for all vertices
     for (int u = 0; u < listSize; ++u) {
-        if (color[u] == -1) {  // If vertex `u` is WHITE
-            dfsVisit(color, p, dist, d, f, time, u);
+        if (color[u] == -1) { // Start DFS only for unvisited vertices
+            dfsVisit(color, p, d, f, time, u, ordered);
         }
     }
 
-    // Populate the DFS result
-    for (int u = 0; u < listSize; ++u) {
-        dfsResult[u + 1] = make_tuple(d[u], f[u], p[u] + 1);
+    for (int u = 0; u < listSize; u++) {
+        dfsResult[u + 1] = make_tuple(d[u], f[u], p[u] == -1 ? -1 : p[u] + 1);
     }
 
     if (sort) {
-        sorted.clear();
-
-        vector<int> topologicalOrder;
-        for (int u = 0; u < listSize; u++) {
-            topologicalOrder.push_back(f[u]);
-        }
-        
-        std::sort(topologicalOrder.begin(), topologicalOrder.end());
-        for (int num : topologicalOrder) {
-            sorted.push_back(num);
-        }
+        reverse(ordered.begin(), ordered.end());
+        this->sorted = ordered;
     }
 
     return dfsResult;
 }
+
 
 
 vector<int> Graph::getOrdering() {
