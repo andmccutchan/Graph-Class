@@ -170,10 +170,25 @@ unordered_map<int, pair<int, int> > Graph::breadthFirstSearch(int s) {
     return bfsResult;
 }
 
+//==============================================================
+// dfsVisit 
+// Helper function of DepthFirstSearch. Recursively explores a vertex and its neighbors.
+//
+// PARAMETERS:
+//  color: Vector tracking the state of nodes.
+//  p: Vector storing the parent of each node.
+//  d: Vector storing discovery times of nodes.
+//  f: Vector storing finish times of nodes.
+//  time: Global time counter for DFS.
+//  u: The current node being explored.
+//  sorted: Vector to store topological order.
+// RETURN VALUE:
+//  none
+//==============================================================
 void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& d, vector<int>& f, int& time, int u, vector<int>& sorted) {
     time++;
-    d[u] = time;
-    color[u] = 0; 
+    d[u] = time; //discovery time
+    color[u] = 0; // gray
 
     for (int v : adjacencyList[u]) {
         if (color[v] == -1) { // White
@@ -182,12 +197,25 @@ void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& d, vector<
         }
     }
 
-    color[u] = 1; 
+    color[u] = 1; //black
     time++;
-    f[u] = time;
+    f[u] = time; //finish time
     sorted.push_back(u); 
 }
 
+//==============================================================
+// depthFirstSearch() 
+// Performs DFS on graph. It records the discovery, finish, and
+// parent value for each node and returns it an unordered map.
+// Can optionally perform topological sort.
+//
+// PARAMETERS:
+//  sort: Boolean deciding to perform topological sort or not.
+// RETURN VALUE:
+//  unordered_map<int tuple<int, int, int>>: unordered map where
+//  key is the vertex, and each value in the tuple represents
+//  the discovery time, finish time, and parent of each vertex.
+//==============================================================
 unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort) {
     unordered_map<int, tuple<int, int, int>> dfsResult;
 
@@ -196,7 +224,7 @@ unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort) {
     vector<int> d(listSize, 0);     // Discovery time
     vector<int> f(listSize, 0);     // Finish time
     vector<int> ordered;           // For topological sorting
-    int time = 0;
+    int time = 0;                  // counter for time aspect.
 
     // Perform DFS for all vertices
     for (int u = 0; u < listSize; ++u) {
@@ -204,11 +232,11 @@ unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort) {
             dfsVisit(color, p, d, f, time, u, ordered);
         }
     }
-
+    // Insert values into unordered map and return
     for (int u = 0; u < listSize; u++) {
         dfsResult[u + 1] = make_tuple(d[u], f[u], p[u] == -1 ? -1 : p[u] + 1);
     }
-
+    // Topological sort
     if (sort) {
         reverse(ordered.begin(), ordered.end());
         this->sorted = ordered;
