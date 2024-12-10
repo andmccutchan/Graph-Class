@@ -230,7 +230,7 @@ unordered_map<int, tuple<int, int, int>> Graph::depthFirstSearch(bool sort=false
             dfsVisit(color, p, dist, d, f, time, u);
         }
         
-        dfsResult[u] = {d[u], f[u], p[u]};
+        dfsResult[u] = make_tuple(d[u], f[u], p[u]);
         u++;
     }
     return dfsResult;

@@ -137,11 +137,13 @@ int main() {
     testAddVertex();
     testDeleteVertex();
     testBreadthFirstSearch();
-    testDepthFirstSearch();
+    //testDepthFirstSearch();
 
     // Tests for redirected input and adjacency list
     cout << "\nTesting with input redirection (e.g., < myGraph.txt):" << endl;
     testReadFromFileInput();
+
+    testDepthFirstSearch();
 
     // Print summary
     cout << "\nTest Summary:" << endl;
