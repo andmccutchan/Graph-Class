@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
+#include <algorithm>
+#include <queue>
 #include "customexceptions.hpp"
 using namespace std;
 
@@ -24,11 +26,12 @@ class Graph {
         bool    edgeIn(int u, int v);
         void    deleteVertex(int u);
         void    addVertex(int u);
+		void 	dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vector<int>& d, vector<int>& f, int& time, int u);
         unordered_map<int, pair<int, int> > breadthFirstSearch(int s);
-        // unordered_map<int, tuple<int, int, int> > depthFirstSearch(bool sort = false);
+        unordered_map<int, tuple<int, int, int> > depthFirstSearch(bool sort = false);
         vector<int> getOrdering();
 		void printAdjacencyList() const;
-        void    readFromSTDIN();
+ static Graph   readFromSTDIN();
 };
 
 #endif
