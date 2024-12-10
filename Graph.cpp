@@ -199,7 +199,7 @@ void Graph::dfsVisit(vector<int>& color, vector<int>& p, vector<int>& dist, vect
     for (int v : adjacencyList[u]) {
         if (color[v] == -1){
             p[v] = u;
-            dfsVisit(color, p, dist, d, f, time, u);
+            dfsVisit(color, p, dist, d, f, time, v);
             //times.first = d[u];
             //times.second = f[u];
         }
